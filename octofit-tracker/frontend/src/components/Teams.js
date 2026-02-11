@@ -4,21 +4,17 @@ function Teams() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Get API base URL based on environment
-  const getApiBaseUrl = () => {
-    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
-    if (codespaceName) {
-      return `https://${codespaceName}-8000.app.github.dev`;
-    }
-    return 'http://localhost:8000';
-  };
+  const [apiUrl, setApiUrl] = useState('');
 
   useEffect(() => {
-    const apiUrl = `${getApiBaseUrl()}/api/teams/`;
-    console.log('Teams Component - Fetching from:', apiUrl);
+    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
+    const url = codespaceName
+      ? `https://${codespaceName}-8000.app.github.dev/api/teams/`
+      : 'http://localhost:8000/api/teams/';
+    setApiUrl(url);
+    console.log('Teams Component - Fetching from:', url);
 
-    fetch(apiUrl)
+    fetch(url)
       .then((response) => {
         console.log('Teams Component - Response status:', response.status);
         if (!response.ok) {
@@ -49,7 +45,7 @@ function Teams() {
       <div className="component-card">
         <div className="card-header-custom">
           <h2>👥 Teams</h2>
-          <span className="badge bg-light text-dark mt-2">{getApiBaseUrl()}/api/teams/</span>
+          <span className="badge bg-light text-dark mt-2">{apiUrl}</span>
         </div>
         <div className="card-body p-0">
           {teams.length === 0 ? (

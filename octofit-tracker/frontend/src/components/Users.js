@@ -4,21 +4,17 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Get API base URL based on environment
-  const getApiBaseUrl = () => {
-    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
-    if (codespaceName) {
-      return `https://${codespaceName}-8000.app.github.dev`;
-    }
-    return 'http://localhost:8000';
-  };
+  const [apiUrl, setApiUrl] = useState('');
 
   useEffect(() => {
-    const apiUrl = `${getApiBaseUrl()}/api/user-profiles/`;
-    console.log('Users Component - Fetching from:', apiUrl);
+    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
+    const url = codespaceName
+      ? `https://${codespaceName}-8000.app.github.dev/api/users/`
+      : 'http://localhost:8000/api/users/';
+    setApiUrl(url);
+    console.log('Users Component - Fetching from:', url);
 
-    fetch(apiUrl)
+    fetch(url)
       .then((response) => {
         console.log('Users Component - Response status:', response.status);
         if (!response.ok) {
@@ -49,7 +45,7 @@ function Users() {
       <div className="component-card">
         <div className="card-header-custom">
           <h2>👤 User Profiles</h2>
-          <span className="badge bg-light text-dark mt-2">{getApiBaseUrl()}/api/user-profiles/</span>
+          <span className="badge bg-light text-dark mt-2">{apiUrl}</span>
         </div>
         <div className="card-body p-0">
           {users.length === 0 ? (

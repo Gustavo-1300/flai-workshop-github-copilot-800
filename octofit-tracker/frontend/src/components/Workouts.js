@@ -4,21 +4,17 @@ function Workouts() {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Get API base URL based on environment
-  const getApiBaseUrl = () => {
-    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
-    if (codespaceName) {
-      return `https://${codespaceName}-8000.app.github.dev`;
-    }
-    return 'http://localhost:8000';
-  };
+  const [apiUrl, setApiUrl] = useState('');
 
   useEffect(() => {
-    const apiUrl = `${getApiBaseUrl()}/api/workouts/`;
-    console.log('Workouts Component - Fetching from:', apiUrl);
+    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
+    const url = codespaceName
+      ? `https://${codespaceName}-8000.app.github.dev/api/workouts/`
+      : 'http://localhost:8000/api/workouts/';
+    setApiUrl(url);
+    console.log('Workouts Component - Fetching from:', url);
 
-    fetch(apiUrl)
+    fetch(url)
       .then((response) => {
         console.log('Workouts Component - Response status:', response.status);
         if (!response.ok) {
@@ -49,7 +45,7 @@ function Workouts() {
       <div className="component-card">
         <div className="card-header-custom">
           <h2>💪 Workouts</h2>
-          <span className="badge bg-light text-dark mt-2">{getApiBaseUrl()}/api/workouts/</span>
+          <span className="badge bg-light text-dark mt-2">{apiUrl}</span>
         </div>
         <div className="card-body p-0">
           {workouts.length === 0 ? (

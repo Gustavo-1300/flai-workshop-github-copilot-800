@@ -4,21 +4,17 @@ function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Get API base URL based on environment
-  const getApiBaseUrl = () => {
-    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
-    if (codespaceName) {
-      return `https://${codespaceName}-8000.app.github.dev`;
-    }
-    return 'http://localhost:8000';
-  };
+  const [apiUrl, setApiUrl] = useState('');
 
   useEffect(() => {
-    const apiUrl = `${getApiBaseUrl()}/api/leaderboard/`;
-    console.log('Leaderboard Component - Fetching from:', apiUrl);
+    const codespaceName = process.env.REACT_APP_CODESPACE_NAME;
+    const url = codespaceName
+      ? `https://${codespaceName}-8000.app.github.dev/api/leaderboard/`
+      : 'http://localhost:8000/api/leaderboard/';
+    setApiUrl(url);
+    console.log('Leaderboard Component - Fetching from:', url);
 
-    fetch(apiUrl)
+    fetch(url)
       .then((response) => {
         console.log('Leaderboard Component - Response status:', response.status);
         if (!response.ok) {
@@ -49,7 +45,7 @@ function Leaderboard() {
       <div className="component-card">
         <div className="card-header-custom">
           <h2>🏆 Leaderboard</h2>
-          <span className="badge bg-light text-dark mt-2">{getApiBaseUrl()}/api/leaderboard/</span>
+          <span className="badge bg-light text-dark mt-2">{apiUrl}</span>
         </div>
         <div className="card-body p-0">
           {leaderboard.length === 0 ? (
